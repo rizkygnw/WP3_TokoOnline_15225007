@@ -9,8 +9,8 @@ use App\Http\Controllers\ProdukController;
 
 
 Route::get('/', function () {
-    //return view('welcome');
-    return redirect()->route('backend.login');
+    // return view('welcome');
+    return redirect()->route('beranda');
 });
 Route::get('backend/beranda',[BerandaController::class, 'berandaBackend'])
 ->name('backend.beranda')->middleware('auth');
@@ -34,7 +34,7 @@ Route::post('backend/laporan/cetakuser', [UserController::class, 'cetakUser'])
 
 // Route untuk Kategori
 Route::resource('backend/kategori', KategoriController::class, ['as' => 'backend'])
-->middleware('auth'); 
+->middleware('auth');
 
 // Route untuk Produk
 Route::resource('backend/produk', ProdukController::class, ['as' => 'backend'])
@@ -50,3 +50,6 @@ Route::get('backend/laporan/formproduk', [ProdukController::class, 'formProduk']
 ->name('backend.laporan.formproduk')->middleware('auth');
 Route::post('backend/laporan/cetakproduk', [ProdukController::class, 'cetakProduk'])
 ->name('backend.laporan.cetakproduk')->middleware('auth');
+
+// Frontend
+Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
