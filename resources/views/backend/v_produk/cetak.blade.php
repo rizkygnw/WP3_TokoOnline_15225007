@@ -42,20 +42,20 @@
     </thead>
     <tbody>
         @foreach ($cetak as $row)
-        <tr>
-            <td> {{ $loop->iteration }} </td>
-            <td> {{ $row->kategori->nama_kategori }} </td>
-            <td>
-                @if ($row->status == 1)
-                Publis
-                @elseif($row->status == 0)
-                Blok
-                @endif
-            </td>
-            <td> {{ $row->nama_produk }} </td>
-            <td> Rp. {{ number_format($row->harga, 0, ',', '.') }} </td>
-            <td> {{ $row->stok }} </td>
-        </tr>
+            <tr>
+                <td> {{ $loop->iteration }} </td>
+                <td> {{ $row->kategori->nama_kategori }} </td>
+                <td>
+                    @if ($row->status == 1)
+                        Publis
+                    @elseif($row->status == 0)
+                        Blok
+                    @endif
+                </td>
+                <td> {{ $row->nama_produk }} </td>
+                <td> Rp. {{ number_format($row->harga, 0, ',', '.') }} </td>
+                <td> {{ $row->stok }} </td>
+            </tr>
         @endforeach
     </tbody>
 </table>
