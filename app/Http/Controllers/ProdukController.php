@@ -53,25 +53,25 @@ class ProdukController extends Controller
         ]);
         $validatedData['user_id'] = auth()->id();
         $validatedData['status'] = 0;
-            
+
         if ($request->file('foto')) {
             $file = $request->file('foto');
             $extension = $file->getClientOriginalExtension();
             $originalFileName = date('YmdHis') . '_' . uniqid() . '.' . $extension;
             $directory = 'storage/img-produk/';
-            
+
             // Simpan gambar asli
             $fileName = ImageHelper::uploadAndResize($file, $directory, $originalFileName);
             $validatedData['foto'] = $fileName;
-            
+
             // create thumbnail 1 (lg)
             $thumbnailLg = 'thumb_lg_' . $originalFileName;
             ImageHelper::uploadAndResize($file, $directory, $thumbnailLg, 800, null);
-            
+
             // create thumbnail 2 (md)
             $thumbnailMd = 'thumb_md_' . $originalFileName;
             ImageHelper::uploadAndResize($file, $directory, $thumbnailMd, 500, 519);
-            
+
             // create thumbnail 3 (sm)
             $thumbnailSm = 'thumb_sm_' . $originalFileName;
             ImageHelper::uploadAndResize($file, $directory, $thumbnailSm, 100, 110);
@@ -175,11 +175,11 @@ class ProdukController extends Controller
             // create thumbnail 2 (md)
             $thumbnailMd = 'thumb_md_' . $originalFileName;
             ImageHelper::uploadAndResize($file, $directory, $thumbnailMd, 500, 519);
-            
+
             // create thumbnail 3 (sm)
             $thumbnailSm = 'thumb_sm_' . $originalFileName;
             ImageHelper::uploadAndResize($file, $directory, $thumbnailSm, 100, 110);
-            
+
             // Simpan nama file asli di database
             $validatedData['foto'] = $originalFileName;
         }
@@ -268,7 +268,7 @@ class ProdukController extends Controller
     {
         $foto = FotoProduk::findOrFail($id);
         $produkId = $foto->produk_id;
-            
+
         // Hapus file gambar dari storage
         $imagePath = public_path('storage/img-produk/') . $foto->foto;
         if (file_exists($imagePath)) {
@@ -276,7 +276,7 @@ class ProdukController extends Controller
         }
         // Hapus record dari database
         $foto->delete();
-        
+
         return redirect()->route('backend.produk.show', $produkId)
             ->with('success', 'Foto berhasil dihapus.');
     }
@@ -302,16 +302,51 @@ class ProdukController extends Controller
 
         $tanggalAwal = $request->input('tanggal_awal');
         $tanggalAkhir = $request->input('tanggal_akhir');
-        
+
         $query = Produk::whereBetween('updated_at', [$tanggalAwal, $tanggalAkhir])
             ->orderBy('id', 'desc');
-        
+
             $produk = $query->get();
             return view('backend.v_produk.cetak', [
                 'judul' => 'Laporan Produk',
                 'tanggalAwal' => $tanggalAwal,
                 'tanggalAkhir' => $tanggalAkhir,
                 'cetak' => $produk
+        ]);
+    }
+
+    public function detail($id)
+    {
+        $fotoProdukTambahan = FotoProduk::where('produk_id', $id)->get();
+        $detail = Produk::findOrFail($id);
+        $kategori = Kategori::orderBy('nama_kategori', 'desc')->get();
+        return view('v_produk.detail', [
+            'judul' => 'Detail Produk',
+            'kategori' => $kategori,
+            'row' => $detail,
+            'fotoProdukTambahan' => $fotoProdukTambahan
+        ]);
+    }
+
+    public function produkKategori($id)
+    {
+    $kategori = Kategori::orderBy('nama_kategori', 'desc')->get();
+    $produk = Produk::where('kategori_id', $id)->where('status', 1)->orderBy('updated_at', 'desc')->paginate(6);
+        return view('v_produk.produkkategori', [
+            'judul' => 'Filter Kategori',
+            'kategori' => $kategori,
+            'produk' => $produk,
+        ]);
+    }
+
+    public function produkAll()
+    {
+    $kategori = Kategori::orderBy('nama_kategori', 'desc')->get();
+    $produk = Produk::where('status', 1)->orderBy('updated_at', 'desc')->paginate(6);
+        return view('v_produk.index', [
+            'judul' => 'Semua Produk',
+            'kategori' => $kategori,
+            'produk' => $produk,
         ]);
     }
 }
