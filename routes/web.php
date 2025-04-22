@@ -84,5 +84,3 @@ Route::middleware('is.customer')->group(function () {
     Route::put('/customer/updateakun/{id}', [CustomerController::class, 'updateAkun'])
         ->name('customer.updateakun');
 });
-
-// dawb

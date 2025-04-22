@@ -8,7 +8,7 @@ class ImageHelper
         $destinationPath = public_path($directory);
         $extension = strtolower($file->getClientOriginalExtension());
         $image = null;
-        
+
         // Tentukan metode pembuatan gambar berdasarkan ekstensi file
         switch ($extension) {
             case 'jpeg':
@@ -52,7 +52,7 @@ class ImageHelper
                 imagegif($image, $destinationPath . '/' . $fileName);
             break;
         }
-        
+
         imagedestroy($image);
         return $fileName;
     }
